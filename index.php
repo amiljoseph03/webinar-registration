@@ -34,9 +34,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "success";
         exit();
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-        exit();
+
+    // Duplicate entry error code
+    if ($e->errorInfo[1] == 1062) {
+
+        if (strpos($e->getMessage(), 'email') !== false) {
+            echo "email alredy exists";
+        } 
+        elseif (strpos($e->getMessage(), 'phone') !== false) {
+            echo "phone alredy exists";
+        } 
+        else {
+            echo "duplicate";
+        }
+
+    } else {
+        echo "server_error";
     }
+
+    exit();
+}
 }
 ?>
 
@@ -75,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: 1px solid rgba(66, 193, 185, 0.3);
             border-radius: 24px !important;
             overflow: visible !important;
+            padding-top: 40px;
         }
 
         .crypto-asset {
@@ -170,13 +188,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .error-msg {
             position: absolute;
             top: 100%;
-            /* safer than bottom */
+   
             left: 55px;
             margin-top: 3px;
             font-size: 0.7rem;
             color: red;
             font-weight: 600;
         }
+
+
+.live-tag {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    color: white;
+    padding: 6px 25px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 20px rgba(255, 75, 43, 0.3);
+    z-index: 10;
+}
+
+
+.live-tag-mobile {
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    text-align: center;
+    margin-bottom: 20px;
+    display: inline-block;
+    width: 100%; 
+    box-shadow: 0 4px 12px rgba(255, 75, 43, 0.2);
+}
+
+@media (max-width: 768px) {
+    .main-card {
+        padding-top: 10px !important;
+        margin: 15px;
+    }
+    
+    .form-stage .text-center h2 {
+        font-size: 1.4rem !important;
+    }
+}
+
+
+
     </style>
 </head>
 
@@ -188,14 +252,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-xl-7 col-lg-9 col-md-11">
-                <div class="card main-card shadow-lg border-0">
+                <!-- <div class="card main-card shadow-lg border-0"> -->
 
-                    <div class="live-tag animate__animated animate__pulse animate__infinite">
-                        <i class="bi bi-broadcast me-2"></i> LIVE WEB3 WEBINAR 2026
-                    </div>
+                   <div class="card main-card shadow-lg border-0">
+    <div class="live-tag d-none d-md-block animate__animated animate__pulse animate__infinite">
+        <i class="bi bi-broadcast me-2"></i> LIVE WEB3 WEBINAR 2026
+    </div>
 
-                    <div class="row g-0">
-                        <div class="col-12 p-4 p-md-5">
+    <div class="row g-0">
+        <div class="col-12 p-4 p-md-5">
+            <div class="live-tag-mobile d-block d-md-none animate__animated animate__pulse animate__infinite">
+                <i class="bi bi-broadcast me-2"></i> LIVE WEB3 & CRYPTO WEBINAR 2026
+            </div>
                             <form id="regForm">
                                 <input type="hidden" name="program_id" value="">
 
